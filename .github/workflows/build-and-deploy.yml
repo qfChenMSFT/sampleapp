@@ -22,7 +22,10 @@ jobs:
 
       - name: Build code
         run: dotnet build --configuration Release
-
+        
+      - name: run env
+        run: echo ${{env.DOTNET_ROOT}}\myapp
+        
       - name: Publish code
         run: dotnet publish -c Release --property:PublishDir="${{env.DOTNET_ROOT}}\myapp"
 
