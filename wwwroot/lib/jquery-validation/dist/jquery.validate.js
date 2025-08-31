@@ -683,7 +683,11 @@ $.extend( $.validator, {
 			} );
 		},
 
+		// Accepts only DOM elements, jQuery objects, or safe selectors (not HTML fragments).
 		clean: function( selector ) {
+			if ( typeof selector === "string" && /^\s*<[\s\S]*>/.test(selector) ) {
+				throw new Error("Selector passed to clean() may be an HTML fragment. This is unsafe!");
+			}
 			return $( selector )[ 0 ];
 		},
 
@@ -1068,6 +1072,10 @@ $.extend( $.validator, {
 				element = this.findByName( element.name );
 			}
 
+			// Prevent unsafe HTML fragments from being passed to $
+			if ( typeof element === "string" && /^\s*<[\s\S]*>/.test(element) ) {
+				throw new Error("Element selector in validationTargetFor() is an HTML fragment. This is unsafe!");
+			}
 			// Always apply ignore filter
 			return $( element ).not( this.settings.ignore )[ 0 ];
 		},
