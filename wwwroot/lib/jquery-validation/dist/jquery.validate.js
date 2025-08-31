@@ -684,7 +684,18 @@ $.extend( $.validator, {
 		},
 
 		clean: function( selector ) {
-			return $( selector )[ 0 ];
+			// Only interpret a string selector as a selector, never as HTML to prevent XSS
+			if ( typeof selector === "string" ) {
+				// Use currentForm as context if available
+				if ( this.currentForm ) {
+					return $( this.currentForm ).find( selector )[0];
+				} else {
+					// Fallback: use document context, still .find() to avoid HTML construction
+					return $( document ).find( selector )[0];
+				}
+			}
+			// If it's a DOM node or jQuery object, just normalize to a DOM node
+			return $( selector )[0];
 		},
 
 		errors: function() {
